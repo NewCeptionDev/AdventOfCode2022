@@ -1,16 +1,12 @@
-import { test, readInput } from "../utils/index"
+import { readInput, test } from "../utils/index"
 
 const prepareInput = (rawInput: string) => rawInput
 
-const input = prepareInput(readInput())
+const taskInput = prepareInput(readInput())
 
-const goA = (input) => {
-  return
-}
+const goA = (input) => {}
 
-const goB = (input) => {
-  return
-}
+const goB = (input) => {}
 
 /* Tests */
 
@@ -19,8 +15,8 @@ const goB = (input) => {
 /* Results */
 
 console.time("Time")
-const resultA = goA(input)
-const resultB = goB(input)
+const resultA = goA(taskInput)
+const resultB = goB(taskInput)
 console.timeEnd("Time")
 
 console.log("Solution to part 1:", resultA)
