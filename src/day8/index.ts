@@ -131,7 +131,8 @@ const updatePosition = (x: number, y: number, direction: Direction): number[] =>
   throw new Error(`Unknown direction ${direction}`)
 }
 
-const positionInBounds = (x: number, y: number, gridLength: number): boolean => x >= 0 && x < gridLength && y >= 0 && y < gridLength
+const positionInBounds = (x: number, y: number, gridLength: number): boolean =>
+  x >= 0 && x < gridLength && y >= 0 && y < gridLength
 
 const getViewingDistance = (
   x: number,
@@ -144,7 +145,6 @@ const getViewingDistance = (
 
   let xPosition
   let yPosition
-
   ;[xPosition, yPosition] = updatePosition(x, y, direction)
 
   let viewingDistance = 0
