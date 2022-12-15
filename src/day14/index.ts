@@ -48,22 +48,22 @@ const parseMap = (lines: string[]): Map<number, Map<number, Tile>> => {
               }
             }
           } else if (lastPosition.second > point.second) {
-              for (let y = lastPosition.second; y >= point.second; y--) {
-                if (!map.has(y)) {
-                  map.set(y, new Map<number, Tile>())
-                }
-
-                map.get(y).set(lastPosition.first, Tile.Rock)
+            for (let y = lastPosition.second; y >= point.second; y--) {
+              if (!map.has(y)) {
+                map.set(y, new Map<number, Tile>())
               }
-            } else {
-              for (let y = lastPosition.second; y <= point.second; y++) {
-                if (!map.has(y)) {
-                  map.set(y, new Map<number, Tile>())
-                }
 
-                map.get(y).set(lastPosition.first, Tile.Rock)
-              }
+              map.get(y).set(lastPosition.first, Tile.Rock)
             }
+          } else {
+            for (let y = lastPosition.second; y <= point.second; y++) {
+              if (!map.has(y)) {
+                map.set(y, new Map<number, Tile>())
+              }
+
+              map.get(y).set(lastPosition.first, Tile.Rock)
+            }
+          }
         }
         lastPosition = point
       })
