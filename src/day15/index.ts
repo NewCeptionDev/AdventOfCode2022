@@ -16,7 +16,8 @@ interface Sensor {
   distanceToBeacon: number
 }
 
-const calculateDistance = (pos1: Pair<number>, pos2: Pair<number>): number => Math.abs(pos1.first - pos2.first) + Math.abs(pos1.second - pos2.second)
+const calculateDistance = (pos1: Pair<number>, pos2: Pair<number>): number =>
+  Math.abs(pos1.first - pos2.first) + Math.abs(pos1.second - pos2.second)
 
 const parseSensor = (line: string): Sensor => {
   const splitSensorBeacon = line.split(": ")
@@ -96,7 +97,8 @@ const goA = (input: string, yLevel: number) => {
   return foundPositions.size
 }
 
-const calculateTuningFrequency = (position: Pair<number>): number => position.first * 4000000 + position.second
+const calculateTuningFrequency = (position: Pair<number>): number =>
+  position.first * 4000000 + position.second
 
 const goB = (input) => {
   const lines = splitToLines(input)
