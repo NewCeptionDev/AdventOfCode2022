@@ -270,7 +270,7 @@ const getPeakForColumn = (column: number, map: Map<number, number[]>, y: number)
     }
   }
 
-  throw new Error("Cant find a peak for a column")
+  return y
 }
 
 const getPeakForAllColumns = (map: Map<number, number[]>, y: number): number[] => [0, 1, 2, 3, 4, 5, 6].map((column) => getPeakForColumn(column, map, y))
