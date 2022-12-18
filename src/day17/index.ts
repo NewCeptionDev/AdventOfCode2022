@@ -315,7 +315,7 @@ const goB = (input) => {
         }
         currentRockType = currentRockType === 5 ? 1 : currentRockType + 1
         rocksPlaced++
-        ;[currentX, currentY] = getSpawnPosition(currentRockType, highestRock)
+        [currentX, currentY] = getSpawnPosition(currentRockType, highestRock)
         if (
           cycleHeightToAdd === 0 &&
           cache.has(currentRockType) &&
