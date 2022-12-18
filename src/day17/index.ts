@@ -269,11 +269,11 @@ const getPeakForColumn = (column: number, map: Map<number, number[]>, y: number)
       return Math.abs(y - height)
     }
   }
+
+  throw new Error("Cant find a peak for a column")
 }
 
-const getPeakForAllColumns = (map: Map<number, number[]>, y: number): number[] => {
-  return [0, 1, 2, 3, 4, 5, 6].map((column) => getPeakForColumn(column, map, y))
-}
+const getPeakForAllColumns = (map: Map<number, number[]>, y: number): number[] => [0, 1, 2, 3, 4, 5, 6].map((column) => getPeakForColumn(column, map, y))
 
 const goB = (input) => {
   const airStream = splitToLines(input)[0].split("")
@@ -323,6 +323,7 @@ const goB = (input) => {
         ) {
           const duplicateKey = Array.from(
             cache.get(currentRockType).get(currentAirStream).keys()
+            // eslint-disable-next-line @typescript-eslint/no-loop-func
           ).find((key) =>
             getPeakForAllColumns(map, highestRock).every((peak) => key.includes(peak))
           )

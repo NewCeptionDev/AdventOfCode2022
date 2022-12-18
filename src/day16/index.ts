@@ -71,7 +71,11 @@ const buildWayMap = (valves: Valve[]): Map<string, Map<string, string[]>> => {
   return wayMap
 }
 
-const calculateMaxPressureValveMap = (valves: Valve[], wayMap: Map<string, Map<string, string[]>>, maxTime: number): Map<string[], number> => {
+const calculateMaxPressureValveMap = (
+  valves: Valve[],
+  wayMap: Map<string, Map<string, string[]>>,
+  maxTime: number
+): Map<string[], number> => {
   const maxPressureForValves = new Map<string[], number>()
 
   const startValve = {
@@ -83,27 +87,39 @@ const calculateMaxPressureValveMap = (valves: Valve[], wayMap: Map<string, Map<s
 
   let paths = [startValve]
 
-  while(paths.length > 0) {
+  while (paths.length > 0) {
     const nextPaths: Path[] = []
 
-    paths.forEach(path => {
-      const possible = valves.filter(valve => !path.openedValves.includes(valve.identifier) && distanceToValve(path.currentPosition, valve.identifier, wayMap) + 2 < (maxTime - path.timeGone - 1))
+    paths.forEach((path) => {
+      const possible = valves.filter(
+        (valve) =>
+          !path.openedValves.includes(valve.identifier) &&
+          distanceToValve(path.currentPosition, valve.identifier, wayMap) + 2 <
+            maxTime - path.timeGone - 1
+      )
 
-      possible.forEach(possiblePath => {
+      possible.forEach((possiblePath) => {
         const distance = distanceToValve(path.currentPosition, possiblePath.identifier, wayMap)
         const updatedTime = path.timeGone + distance + 2
         const newEntry = {
           currentPosition: possiblePath.identifier,
           openedValves: [...path.openedValves, possiblePath.identifier],
           timeGone: updatedTime,
-          pressureReleasedAtEnd: path.pressureReleasedAtEnd + (maxTime - updatedTime) * possiblePath.flowRate
+          pressureReleasedAtEnd:
+            path.pressureReleasedAtEnd + (maxTime - updatedTime) * possiblePath.flowRate,
         }
         nextPaths.push(newEntry)
 
-        const maxPressureEntryForValves = Array.from(maxPressureForValves.keys()).find(set => set.length === newEntry.openedValves.length && newEntry.openedValves.every(valve => set.includes(valve)))
-        if(!maxPressureEntryForValves) {
+        const maxPressureEntryForValves = Array.from(maxPressureForValves.keys()).find(
+          (set) =>
+            set.length === newEntry.openedValves.length &&
+            newEntry.openedValves.every((valve) => set.includes(valve))
+        )
+        if (!maxPressureEntryForValves) {
           maxPressureForValves.set(newEntry.openedValves, newEntry.pressureReleasedAtEnd)
-        } else if(maxPressureForValves.get(maxPressureEntryForValves) < newEntry.pressureReleasedAtEnd) {
+        } else if (
+          maxPressureForValves.get(maxPressureEntryForValves) < newEntry.pressureReleasedAtEnd
+        ) {
           maxPressureForValves.set(maxPressureEntryForValves, newEntry.pressureReleasedAtEnd)
         }
       })
@@ -122,7 +138,9 @@ const goA = (input) => {
   valves = valves.filter((valve) => valve.flowRate !== 0)
   const maxPressureForValves = calculateMaxPressureValveMap(valves, wayMap, 30)
 
-  return Array.from(maxPressureForValves.values()).sort((a, b) => a - b).pop()
+  return Array.from(maxPressureForValves.values())
+    .sort((a, b) => a - b)
+    .pop()
 }
 
 const goB = (input) => {
@@ -136,11 +154,12 @@ const goB = (input) => {
 
   let maxReleasablePressure = 0
 
-  for(let i = 0; i < keys.length; i++) {
-    for(let j = i + 1; j < keys.length; j++) {
-      if(keys[i].every(valve => !keys[j].includes(valve))) {
-        const releasablePressure = maxPressureForValves.get(keys[i]) + maxPressureForValves.get(keys[j])
-        if(maxReleasablePressure < releasablePressure) {
+  for (let i = 0; i < keys.length; i++) {
+    for (let j = i + 1; j < keys.length; j++) {
+      if (keys[i].every((valve) => !keys[j].includes(valve))) {
+        const releasablePressure =
+          maxPressureForValves.get(keys[i]) + maxPressureForValves.get(keys[j])
+        if (maxReleasablePressure < releasablePressure) {
           maxReleasablePressure = releasablePressure
         }
       }

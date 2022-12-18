@@ -6,10 +6,10 @@ const prepareInput = (rawInput: string) => rawInput
 const taskInput = prepareInput(readInput())
 
 interface Cube {
-  x: number,
-  y: number,
-  z: number,
-  openSurfaceAreas?: number,
+  x: number
+  y: number
+  z: number
+  openSurfaceAreas?: number
   lavaSurfaceArea?: number
 }
 
@@ -60,43 +60,55 @@ const goA = (input) => {
     }
   }
 
-  return cubes.map(cube => cube.openSurfaceAreas).reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+  return cubes
+    .map((cube) => cube.openSurfaceAreas)
+    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
 }
 
-const cubeContainedInArray = (cube: Cube, array: Cube[]): boolean => array.find(elem => elem.x === cube.x && elem.y === cube.y && elem.z === cube.z) !== undefined
+const cubeContainedInArray = (cube: Cube, array: Cube[]): boolean =>
+  array.find((elem) => elem.x === cube.x && elem.y === cube.y && elem.z === cube.z) !== undefined
 
 const getNeighbourCubes = (cube: Cube): Cube[] => {
   const neighbours: Cube[] = []
 
-  neighbours.push({
-    x: cube.x - 1,
-    y: cube.y,
-    z: cube.z,
-  }, {
-    x: cube.x + 1,
-    y: cube.y,
-    z: cube.z,
-  })
+  neighbours.push(
+    {
+      x: cube.x - 1,
+      y: cube.y,
+      z: cube.z,
+    },
+    {
+      x: cube.x + 1,
+      y: cube.y,
+      z: cube.z,
+    }
+  )
 
-  neighbours.push({
-    x: cube.x,
-    y: cube.y - 1,
-    z: cube.z,
-  }, {
-    x: cube.x,
-    y: cube.y + 1,
-    z: cube.z,
-  })
+  neighbours.push(
+    {
+      x: cube.x,
+      y: cube.y - 1,
+      z: cube.z,
+    },
+    {
+      x: cube.x,
+      y: cube.y + 1,
+      z: cube.z,
+    }
+  )
 
-  neighbours.push({
-    x: cube.x,
-    y: cube.y,
-    z: cube.z - 1,
-  }, {
-    x: cube.x,
-    y: cube.y,
-    z: cube.z + 1,
-  })
+  neighbours.push(
+    {
+      x: cube.x,
+      y: cube.y,
+      z: cube.z - 1,
+    },
+    {
+      x: cube.x,
+      y: cube.y,
+      z: cube.z + 1,
+    }
+  )
 
   return neighbours
 }
@@ -105,12 +117,21 @@ const goB = (input) => {
   const lines = splitToLines(input)
   const cubes = lines.map(parseCube)
 
-  const minX = cubes.map(cube => cube.x).sort((a, b) => a - b)[0]
-  const maxX = cubes.map(cube => cube.x).sort((a, b) => a - b).pop()
-  const minY = cubes.map(cube => cube.y).sort((a, b) => a - b)[0]
-  const maxY = cubes.map(cube => cube.y).sort((a, b) => a - b).pop()
-  const minZ = cubes.map(cube => cube.z).sort((a, b) => a - b)[0]
-  const maxZ = cubes.map(cube => cube.z).sort((a, b) => a - b).pop()
+  const minX = cubes.map((cube) => cube.x).sort((a, b) => a - b)[0]
+  const maxX = cubes
+    .map((cube) => cube.x)
+    .sort((a, b) => a - b)
+    .pop()
+  const minY = cubes.map((cube) => cube.y).sort((a, b) => a - b)[0]
+  const maxY = cubes
+    .map((cube) => cube.y)
+    .sort((a, b) => a - b)
+    .pop()
+  const minZ = cubes.map((cube) => cube.z).sort((a, b) => a - b)[0]
+  const maxZ = cubes
+    .map((cube) => cube.z)
+    .sort((a, b) => a - b)
+    .pop()
 
   let surfaceArea = goA(input)
   let possibleAirHoles: Cube[][] = []
@@ -129,15 +150,21 @@ const goB = (input) => {
         if (!cubeContainedInArray(airCube, cubes)) {
           const neighbourCubes = getNeighbourCubes(airCube)
 
-          airCube.lavaSurfaceArea = neighbourCubes.filter(neighbour => cubeContainedInArray(neighbour, cubes)).length
+          airCube.lavaSurfaceArea = neighbourCubes.filter((neighbour) =>
+            cubeContainedInArray(neighbour, cubes)
+          ).length
           const fitsIn: number[] = []
           for (let i = 0; i < possibleAirHoles.length; i++) {
-            if (possibleAirHoles[i].some(possibleAirHole => nextToEachOther(airCube, possibleAirHole))) {
+            if (
+              possibleAirHoles[i].some((possibleAirHole) =>
+                nextToEachOther(airCube, possibleAirHole)
+              )
+            ) {
               fitsIn.push(i)
             }
           }
 
-          if(fitsIn.length === 1) {
+          if (fitsIn.length === 1) {
             for (let j = 0; j < possibleAirHoles[fitsIn[0]].length; j++) {
               if (nextToEachOther(airCube, possibleAirHoles[fitsIn[0]][j])) {
                 airCube.openSurfaceAreas += 1
@@ -145,15 +172,15 @@ const goB = (input) => {
               }
             }
             possibleAirHoles[fitsIn[0]].push(airCube)
-          } else if(fitsIn.length > 0){
+          } else if (fitsIn.length > 0) {
             const toCombine = possibleAirHoles.filter((group, index) => fitsIn.includes(index))
 
             const combined: Cube[] = []
-            toCombine.forEach(group => {
+            toCombine.forEach((group) => {
               combined.push(...group)
             })
             combined.push(airCube)
-            combined.forEach(elem => {
+            combined.forEach((elem) => {
               // eslint-disable-next-line no-param-reassign
               elem.openSurfaceAreas = 0
             })
@@ -178,11 +205,13 @@ const goB = (input) => {
     }
   }
 
-  possibleAirHoles.filter(group => group.every(elem => elem.openSurfaceAreas + elem.lavaSurfaceArea === 6)).forEach(group => {
-    group.forEach(airHole => {
-      surfaceArea -= airHole.lavaSurfaceArea
+  possibleAirHoles
+    .filter((group) => group.every((elem) => elem.openSurfaceAreas + elem.lavaSurfaceArea === 6))
+    .forEach((group) => {
+      group.forEach((airHole) => {
+        surfaceArea -= airHole.lavaSurfaceArea
+      })
     })
-  })
 
   return surfaceArea
 }
@@ -193,8 +222,8 @@ test(goA(readTestFile()), 64)
 test(goB(readInputFromSpecialFile("customTest1.txt")), 54)
 test(goB(readInputFromSpecialFile("customTest2.txt")), 80)
 test(goB(readInputFromSpecialFile("customTest3.txt")), 96)
-test(goB(readInputFromSpecialFile("customTest4.txt")),  110)
-test(goB(readInputFromSpecialFile("customTest5.txt")),  110)
+test(goB(readInputFromSpecialFile("customTest4.txt")), 110)
+test(goB(readInputFromSpecialFile("customTest5.txt")), 110)
 
 /* Results */
 
