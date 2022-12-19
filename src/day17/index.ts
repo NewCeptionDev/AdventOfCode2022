@@ -273,7 +273,8 @@ const getPeakForColumn = (column: number, map: Map<number, number[]>, y: number)
   return y
 }
 
-const getPeakForAllColumns = (map: Map<number, number[]>, y: number): number[] => [0, 1, 2, 3, 4, 5, 6].map((column) => getPeakForColumn(column, map, y))
+const getPeakForAllColumns = (map: Map<number, number[]>, y: number): number[] =>
+  [0, 1, 2, 3, 4, 5, 6].map((column) => getPeakForColumn(column, map, y))
 
 const goB = (input) => {
   const airStream = splitToLines(input)[0].split("")
@@ -315,7 +316,7 @@ const goB = (input) => {
         }
         currentRockType = currentRockType === 5 ? 1 : currentRockType + 1
         rocksPlaced++
-        [currentX, currentY] = getSpawnPosition(currentRockType, highestRock)
+        ;[currentX, currentY] = getSpawnPosition(currentRockType, highestRock)
         if (
           cycleHeightToAdd === 0 &&
           cache.has(currentRockType) &&
