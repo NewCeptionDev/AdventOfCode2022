@@ -201,16 +201,12 @@ const goA = (input) => {
   const map = parseMap(lines.slice(0, lines.length - 1))
   const instructions = parseInstructions(lines[lines.length - 1])
 
-  // console.log(instructions)
-
   let position = getStartPosition(map)
 
   instructions.forEach(instruction => {
     position = updateFacing(position, instruction.turnDirection)
     position = moveOnMap(position, map, instruction.steps)
   })
-
-  // console.log(position)
 
   return position.y * 1000 + position.x * 4 + position.facing
 }

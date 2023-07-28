@@ -10,12 +10,6 @@ interface Position {
     y: number
 }
 
-interface Path {
-    position: Position,
-    hitEnd: boolean,
-    hitStart: boolean
-}
-
 interface Blizzard {
     getPosition: (time: number) => Position
 }
@@ -34,7 +28,7 @@ const parseBlizzards = (lines: string[]): Blizzard[] => {
                             getPosition: (time: number): Position => {
                                 const newY = (y - time) % (lines.length - 2)
                                 return {
-                                    x: x,
+                                    x,
                                     y: newY <= 0 ? newY + lines.length - 2 : newY
                                 }
                             }
@@ -45,7 +39,7 @@ const parseBlizzards = (lines: string[]): Blizzard[] => {
                             getPosition: (time: number): Position => {
                                 const newY = (y + time) % (lines.length - 2)
                                 return {
-                                    x: x,
+                                    x,
                                     y: newY <= 0 ? newY + lines.length - 2 : newY
                                 }
                             }
@@ -57,7 +51,7 @@ const parseBlizzards = (lines: string[]): Blizzard[] => {
                                 const newX = ((x + time) % (lines[y].length - 2))
                                 return {
                                     x: newX <= 0 ? newX + lines[y].length - 2 : newX,
-                                    y: y
+                                    y
                                 }
                             }
                         })
@@ -68,12 +62,13 @@ const parseBlizzards = (lines: string[]): Blizzard[] => {
                                 const newX = ((x - time) % (lines[y].length - 2))
                                 return {
                                     x: newX <= 0 ? newX + lines[y].length - 2 : newX,
-                                    y: y
+                                    y
                                 }
                             }
                         })
                         break;
-                        // no default
+
+                    // no default
                 }
             }
         }
@@ -85,14 +80,14 @@ const parseBlizzards = (lines: string[]): Blizzard[] => {
 const getAllPossiblePositions = (current: Position, maxX: number, maxY: number, targetX: number): Position[] => {
     const newPosition: Position[] = []
 
-    if(current.x > 1 && current.y !== 0 && current.y !== maxY) {
+    if(current.x > 1 && current.y > 0 && current.y < maxY - 1) {
         newPosition.push({
             x: current.x - 1,
             y: current.y
         })
     }
 
-    if(current.x + 2 < maxX && current.y !== 0 && current.y !== maxY) {
+    if(current.x + 2 < maxX && current.y > 0 && current.y < maxY - 1) {
         newPosition.push({
             x: current.x + 1,
             y: current.y
@@ -118,41 +113,31 @@ const getAllPossiblePositions = (current: Position, maxX: number, maxY: number, 
     return newPosition
 }
 
-const getStepsToPosition = (blizzards: Blizzard[], endPosition: Position, startPosition: Position, startTime: number, xLength: number, yLength: number, roundTrip: boolean): number => {
-    let currentPositions: Path[] = [{
-        position: startPosition,
-        hitEnd: false,
-        hitStart: false
-    }]
+const getStepsToPosition = (blizzards: Blizzard[], endPosition: Position, startPosition: Position, startTime: number, xLength: number, yLength: number): number => {
+    let currentPositions: Position[] = [startPosition]
     let steps = startTime
 
     while(currentPositions.length > 0) {
 
-        console.log("steps", steps)
-        const nextPositions: Path[] = []
+        const nextPositions: Position[] = []
 
-        currentPositions.forEach(path => {
-            const possible = getAllPossiblePositions(path.position, xLength, yLength, endPosition.x)
+        currentPositions.forEach(position => {
+            const possible = getAllPossiblePositions(position, xLength, yLength, endPosition.x)
 
             possible.forEach(possiblePosition => {
-                if(!nextPositions.find(added => added.position.x === possiblePosition.x && added.position.y === possiblePosition.y)) {
-                    nextPositions.push({
-                        position: possiblePosition,
-                        hitEnd: path.hitEnd || (possiblePosition.x === endPosition.x && possiblePosition.y === endPosition.y),
-                        hitStart: path.hitStart || (path.hitEnd && possiblePosition.x === startPosition.x && possiblePosition.y === startPosition.y)
-                    })
+                if(!nextPositions.find(added => added.x === possiblePosition.x && added.y === possiblePosition.y)) {
+                    nextPositions.push(possiblePosition)
                 }
-
             })
         })
 
         steps++
-        currentPositions = nextPositions.filter(path => blizzards.every(blizzard => {
+        currentPositions = nextPositions.filter(position => blizzards.every(blizzard => {
             const newPosition = blizzard.getPosition(steps)
-            return newPosition.x !== path.position.x || newPosition.y !== path.position.y
+            return newPosition.x !== position.x || newPosition.y !== position.y
         }))
 
-        if(currentPositions.find(path => path.position.x === endPosition.x && path.position.y === endPosition.y && (!roundTrip || (path.hitEnd && path.hitStart)))) {
+        if(currentPositions.find(path => path.x === endPosition.x && path.y === endPosition.y)) {
             return steps
         }
     }
@@ -165,16 +150,16 @@ const goA = (input) => {
     const blizzards = parseBlizzards(lines)
 
     const startPosition = {
-        x: lines[0].split("").map((char, index) => ({char: char, index: index})).find((elem) => elem.char === ".").index,
+        x: lines[0].split("").map((char, index) => ({char, index})).find((elem) => elem.char === ".").index,
         y: 0
     }
 
     const endPosition = {
-        x: lines[lines.length - 1].split("").map((char, index) => ({char: char, index: index})).find((elem) => elem.char === ".").index,
+        x: lines[lines.length - 1].split("").map((char, index) => ({char, index})).find((elem) => elem.char === ".").index,
         y: lines.length - 1
     }
 
-    return getStepsToPosition(blizzards, endPosition, startPosition, 0, lines[0].length, lines.length, false)
+    return getStepsToPosition(blizzards, endPosition, startPosition, 0, lines[0].length, lines.length)
 }
 
 const goB = (input) => {
@@ -182,16 +167,20 @@ const goB = (input) => {
     const blizzards = parseBlizzards(lines)
 
     const startPosition = {
-        x: lines[0].split("").map((char, index) => ({char: char, index: index})).find((elem) => elem.char === ".").index,
+        x: lines[0].split("").map((char, index) => ({char, index})).find((elem) => elem.char === ".").index,
         y: 0
     }
 
     const endPosition = {
-        x: lines[lines.length - 1].split("").map((char, index) => ({char: char, index: index})).find((elem) => elem.char === ".").index,
+        x: lines[lines.length - 1].split("").map((char, index) => ({char, index})).find((elem) => elem.char === ".").index,
         y: lines.length - 1
     }
 
-    return getStepsToPosition(blizzards, endPosition, startPosition, 0, lines[0].length, lines.length, true)
+    const toEnd = getStepsToPosition(blizzards, endPosition, startPosition, 0, lines[0].length, lines.length)
+    const toStart = getStepsToPosition(blizzards, startPosition, endPosition, toEnd + 1, lines[0].length, lines.length)
+    const toEndAgain = getStepsToPosition(blizzards, endPosition, startPosition, toStart + 1, lines[0].length, lines.length)
+
+    return toEndAgain
 }
 
 /* Tests */
@@ -203,8 +192,8 @@ test(goB(readTestFile()), 54)
 
 console.time("Time")
 const resultA = goA(taskInput)
-//const resultB = goB(taskInput)
+const resultB = goB(taskInput)
 console.timeEnd("Time")
 
 console.log("Solution to part 1:", resultA)
-//console.log("Solution to part 2:", resultB)
+console.log("Solution to part 2:", resultB)
