@@ -13,7 +13,6 @@ const digitToDecimal = (element: string): number => {
       return -1
     default:
       return parseInt(element, 10)
-
   }
 }
 
@@ -33,7 +32,7 @@ const snafuToDecimal = (line: string) => {
 
   let decimal = 0
 
-  for(let x = elements.length - 1; x >= 0; x--) {
+  for (let x = elements.length - 1; x >= 0; x--) {
     decimal += Math.pow(5, elements.length - 1 - x) * digitToDecimal(elements[x])
   }
 
@@ -41,23 +40,26 @@ const snafuToDecimal = (line: string) => {
 }
 
 const decimalToSnafu = (decimal: number): string => {
-  let result = "";
-  let quotient = decimal;
+  let result = ""
+  let quotient = decimal
 
   while (quotient > 0) {
-    const remainder = ((quotient + 2) % 5) - 2;
-    quotient = Math.floor((quotient + 2) / 5);
-    result = decimalToSnafuDigit(remainder) + result;
+    const remainder = ((quotient + 2) % 5) - 2
+    quotient = Math.floor((quotient + 2) / 5)
+    result = decimalToSnafuDigit(remainder) + result
   }
-  return result;
+  return result
 }
 
 const goA = (input) => {
   const lines = splitToLines(input)
 
-  return decimalToSnafu(lines.map(line => snafuToDecimal(line)).reduce((previousValue, currentValue) => previousValue + currentValue, 0))
+  return decimalToSnafu(
+    lines
+      .map((line) => snafuToDecimal(line))
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+  )
 }
-
 
 /* Tests */
 

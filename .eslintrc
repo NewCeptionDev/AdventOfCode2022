@@ -4,5 +4,8 @@
     {
       "files": ["*.ts"]
     }
-  ]
+  ],
+  "rules": {
+    "no-console": "off"
+  }
 }

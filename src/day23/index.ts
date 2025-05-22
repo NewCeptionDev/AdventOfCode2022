@@ -2,7 +2,7 @@ import { readInput, test } from "../utils/index"
 import { readTestFile, splitToLines } from "../utils/readInput"
 
 interface Position {
-  x: number,
+  x: number
   y: number
 }
 
@@ -26,68 +26,75 @@ const parseMap = (input: string[]): Map<number, Map<number, string>> => {
   return map
 }
 
-const isPositionDefined = (position: Position, map: Map<number, Map<number, string>>): boolean => map.has(position.y) && map.get(position.y).has(position.x)
+const isPositionDefined = (position: Position, map: Map<number, Map<number, string>>): boolean =>
+  map.has(position.y) && map.get(position.y).has(position.x)
 
-const isPositionFree = (position: Position, map: Map<number, Map<number, string>>): boolean => !isPositionDefined(position, map) || map.get(position.y).get(position.x) === "."
+const isPositionFree = (position: Position, map: Map<number, Map<number, string>>): boolean =>
+  !isPositionDefined(position, map) || map.get(position.y).get(position.x) === "."
 
-const isElfOnPosition = (position: Position, map: Map<number, Map<number, string>>): boolean => isPositionDefined(position,map) && map.get(position.y).get(position.x) === "#"
+const isElfOnPosition = (position: Position, map: Map<number, Map<number, string>>): boolean =>
+  isPositionDefined(position, map) && map.get(position.y).get(position.x) === "#"
 
 const hasElfAround = (position: Position, map: Map<number, Map<number, string>>): boolean => {
   const surroundingPositions: Position[] = [
     {
-    x: position.x,
-    y: position.y - 1
+      x: position.x,
+      y: position.y - 1,
     },
     {
       x: position.x + 1,
-      y: position.y - 1
+      y: position.y - 1,
     },
     {
       x: position.x - 1,
-      y: position.y - 1
+      y: position.y - 1,
     },
     {
       x: position.x - 1,
-      y: position.y
+      y: position.y,
     },
     {
       x: position.x,
-      y: position.y + 1
+      y: position.y + 1,
     },
     {
       x: position.x + 1,
-      y: position.y + 1
+      y: position.y + 1,
     },
     {
       x: position.x - 1,
-      y: position.y + 1
+      y: position.y + 1,
     },
     {
       x: position.x + 1,
-      y: position.y
-    }
+      y: position.y,
+    },
   ]
 
-  return surroundingPositions.some(pos => isElfOnPosition(pos, map))
+  return surroundingPositions.some((pos) => isElfOnPosition(pos, map))
 }
 
 const northMovePossible = (position: Position, map: Map<number, Map<number, string>>): Position => {
   const northPosition = {
     x: position.x,
-    y: position.y - 1
+    y: position.y - 1,
   }
 
   const northEastPosition = {
     x: position.x + 1,
-    y: position.y - 1
+    y: position.y - 1,
   }
 
   const northWestPosition = {
     x: position.x - 1,
-    y: position.y - 1
+    y: position.y - 1,
   }
 
-  if(isPositionFree(northPosition, map) && isPositionFree(northEastPosition, map) && isPositionFree(northWestPosition, map)) {
+  if (
+    isPositionFree(northPosition, map) &&
+    isPositionFree(northEastPosition, map) &&
+    isPositionFree(northWestPosition, map)
+  ) {
     return northPosition
   }
 
@@ -97,20 +104,24 @@ const northMovePossible = (position: Position, map: Map<number, Map<number, stri
 const southMovePossible = (position: Position, map: Map<number, Map<number, string>>): Position => {
   const southPosition = {
     x: position.x,
-    y: position.y + 1
+    y: position.y + 1,
   }
 
   const southEastPosition = {
     x: position.x + 1,
-    y: position.y + 1
+    y: position.y + 1,
   }
 
   const southWestPosition = {
     x: position.x - 1,
-    y: position.y + 1
+    y: position.y + 1,
   }
 
-  if(isPositionFree(southPosition, map) && isPositionFree(southEastPosition, map) && isPositionFree(southWestPosition, map)) {
+  if (
+    isPositionFree(southPosition, map) &&
+    isPositionFree(southEastPosition, map) &&
+    isPositionFree(southWestPosition, map)
+  ) {
     return southPosition
   }
 
@@ -120,20 +131,24 @@ const southMovePossible = (position: Position, map: Map<number, Map<number, stri
 const westMovePossible = (position: Position, map: Map<number, Map<number, string>>): Position => {
   const westPosition = {
     x: position.x - 1,
-    y: position.y
+    y: position.y,
   }
 
   const northWestPosition = {
     x: position.x - 1,
-    y: position.y - 1
+    y: position.y - 1,
   }
 
   const southWestPosition = {
     x: position.x - 1,
-    y: position.y + 1
+    y: position.y + 1,
   }
 
-  if(isPositionFree(westPosition, map) && isPositionFree(northWestPosition, map) && isPositionFree(southWestPosition, map)) {
+  if (
+    isPositionFree(westPosition, map) &&
+    isPositionFree(northWestPosition, map) &&
+    isPositionFree(southWestPosition, map)
+  ) {
     return westPosition
   }
 
@@ -143,35 +158,42 @@ const westMovePossible = (position: Position, map: Map<number, Map<number, strin
 const eastMovePossible = (position: Position, map: Map<number, Map<number, string>>): Position => {
   const eastPosition = {
     x: position.x + 1,
-    y: position.y
+    y: position.y,
   }
 
   const northEastPosition = {
     x: position.x + 1,
-    y: position.y - 1
+    y: position.y - 1,
   }
 
   const southEastPosition = {
     x: position.x + 1,
-    y: position.y + 1
+    y: position.y + 1,
   }
 
-  if(isPositionFree(eastPosition, map) && isPositionFree(northEastPosition, map) && isPositionFree(southEastPosition, map)) {
+  if (
+    isPositionFree(eastPosition, map) &&
+    isPositionFree(northEastPosition, map) &&
+    isPositionFree(southEastPosition, map)
+  ) {
     return eastPosition
   }
 
   return null
 }
 
-const computeMove = (position: Position,  map: Map<number, Map<number, string>>, firstConsideredDirection: number): Position => {
-
-  if(!hasElfAround(position, map)) {
-    return null;
+const computeMove = (
+  position: Position,
+  map: Map<number, Map<number, string>>,
+  firstConsideredDirection: number
+): Position => {
+  if (!hasElfAround(position, map)) {
+    return null
   }
 
   let computedPosition: Position = null
 
-  for(let i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++) {
     switch ((firstConsideredDirection + i) % 4) {
       case 0:
         computedPosition = northMovePossible(position, map)
@@ -189,7 +211,7 @@ const computeMove = (position: Position,  map: Map<number, Map<number, string>>,
       // no default
     }
 
-    if(computedPosition) {
+    if (computedPosition) {
       return computedPosition
     }
   }
@@ -197,13 +219,19 @@ const computeMove = (position: Position,  map: Map<number, Map<number, string>>,
   return null
 }
 
-const move = (map: Map<number, Map<number, string>>, round: number): { map: Map<number, Map<number, string>>, moved: boolean } => {
+const move = (
+  map: Map<number, Map<number, string>>,
+  round: number
+): { map: Map<number, Map<number, string>>; moved: boolean } => {
   const yLevels = Array.from(map.keys()).sort((a, b) => a - b)
 
-  const plannedMoves: Map<number, Map<number, Position[]>> = new Map<number, Map<number, Position[]>>();
+  const plannedMoves: Map<number, Map<number, Position[]>> = new Map<
+    number,
+    Map<number, Position[]>
+  >()
 
-  for(let y = yLevels[0]; y <= yLevels[yLevels.length - 1]; y++) {
-    if(map.has(y)) {
+  for (let y = yLevels[0]; y <= yLevels[yLevels.length - 1]; y++) {
+    if (map.has(y)) {
       const xLevels = Array.from(map.get(y).keys()).sort((a, b) => a - b)
       for (let x = xLevels[0]; x <= xLevels[xLevels.length - 1]; x++) {
         if (isElfOnPosition({ x, y }, map)) {
@@ -221,7 +249,7 @@ const move = (map: Map<number, Map<number, string>>, round: number): { map: Map<
             plannedMoves.get(plannedNewPosition.y).set(plannedNewPosition.x, [])
           }
 
-          plannedMoves.get(plannedNewPosition.y).get(plannedNewPosition.x).push({ x,y })
+          plannedMoves.get(plannedNewPosition.y).get(plannedNewPosition.x).push({ x, y })
         }
       }
     }
@@ -230,21 +258,21 @@ const move = (map: Map<number, Map<number, string>>, round: number): { map: Map<
   const afterMove: Map<number, Map<number, string>> = new Map<number, Map<number, string>>()
   let moved: boolean = false
 
-  Array.from(plannedMoves.keys()).forEach(y => {
-    if(!afterMove.has(y)) {
+  Array.from(plannedMoves.keys()).forEach((y) => {
+    if (!afterMove.has(y)) {
       afterMove.set(y, new Map<number, string>())
     }
 
-    Array.from(plannedMoves.get(y).keys()).forEach(x => {
+    Array.from(plannedMoves.get(y).keys()).forEach((x) => {
       const positions = plannedMoves.get(y).get(x)
-      if(positions.length === 1) {
+      if (positions.length === 1) {
         afterMove.get(y).set(x, "#")
-        if(positions[0].y !== y || positions[0].x !== x) {
+        if (positions[0].y !== y || positions[0].x !== x) {
           moved = true
         }
-      } else if(positions.length > 1) {
-        positions.forEach(oldPosition => {
-          if(!afterMove.has(oldPosition.y)) {
+      } else if (positions.length > 1) {
+        positions.forEach((oldPosition) => {
+          if (!afterMove.has(oldPosition.y)) {
             afterMove.set(oldPosition.y, new Map<number, string>())
           }
 
@@ -258,17 +286,26 @@ const move = (map: Map<number, Map<number, string>>, round: number): { map: Map<
 }
 
 const calculateGroundTilesInElfRectangle = (map: Map<number, Map<number, string>>): number => {
-  const lowestXValue = Array.from(map.values()).map(innerMap => Array.from(innerMap.keys())).map(list => list.sort((a, b) => a - b)).map(list => list[0]).sort((a, b) => a - b)[0]
-  const highestXValue = Array.from(map.values()).map(innerMap => Array.from(innerMap.keys())).map(list => list.sort((a, b) => b - a)).map(list => list[0]).sort((a, b) => b - a)[0]
+  const lowestXValue = Array.from(map.values())
+    .map((innerMap) => Array.from(innerMap.keys()))
+    .map((list) => list.sort((a, b) => a - b))
+    .map((list) => list[0])
+    .sort((a, b) => a - b)[0]
+  const highestXValue = Array.from(map.values())
+    .map((innerMap) => Array.from(innerMap.keys()))
+    .map((list) => list.sort((a, b) => b - a))
+    .map((list) => list[0])
+    .sort((a, b) => b - a)[0]
   const lowestYValue = Array.from(map.keys()).sort((a, b) => a - b)[0]
   const highestYValue = Array.from(map.keys()).sort((a, b) => b - a)[0]
 
   let numberOfGroundTiles = 0
   const tilesPerRow = highestXValue - lowestXValue + 1
 
-  for(let y = lowestYValue; y <= highestYValue; y++) {
-    if(map.has(y)) {
-      numberOfGroundTiles += tilesPerRow - Array.from(map.get(y).entries()).filter(entry => entry[1] === "#").length
+  for (let y = lowestYValue; y <= highestYValue; y++) {
+    if (map.has(y)) {
+      numberOfGroundTiles +=
+        tilesPerRow - Array.from(map.get(y).entries()).filter((entry) => entry[1] === "#").length
     } else {
       numberOfGroundTiles += tilesPerRow
     }
@@ -281,7 +318,7 @@ const goA = (input) => {
   const lines = splitToLines(input)
   let map = parseMap(lines)
 
-  for(let i = 0;  i < 10; i++) {
+  for (let i = 0; i < 10; i++) {
     map = move(map, i).map
   }
 
@@ -293,7 +330,7 @@ const goB = (input) => {
   let map = parseMap(lines)
 
   let moved = true
-  let index = 0;
+  let index = 0
 
   while (moved) {
     const result = move(map, index)
